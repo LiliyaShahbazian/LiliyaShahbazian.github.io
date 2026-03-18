@@ -1,0 +1,160 @@
+---
+interface Props {
+  loaderUrl:      string;
+  dataUrl:        string;
+  frameworkUrl:   string;
+  codeUrl:        string;
+  productName:    string;
+  width?:         number;
+  height?:        number;
+  companyName?:   string;
+  productVersion?: string;
+}
+
+const {
+  loaderUrl,
+  dataUrl,
+  frameworkUrl,
+  codeUrl,
+  productName,
+  width = 960,
+  height = 600,
+  companyName = 'DefaultCompany',
+  productVersion = '1.0.0',
+} = Astro.props;
+---
+
+<div
+  id="game-player-root"
+  data-loader={loaderUrl}
+  data-data={dataUrl}
+  data-framework={frameworkUrl}
+  data-code={codeUrl}
+  data-product={productName}
+  data-company={companyName}
+  data-version={productVersion}
+  data-width={width}
+  data-height={height}
+  class="w-full flex flex-col items-center"
+>
+  <div id="unity-container" class="unity-desktop relative">
+    <canvas
+      id="unity-canvas"
+      width={width}
+      height={height}
+      tabindex="-1"
+      class="block bg-[#231F20] max-w-full"
+      style={`width:${width}px;height:${height}px`}
+    ></canvas>
+
+    <!-- Custom styled loading bar -->
+    <div
+      id="unity-loading-bar"
+      class="absolute inset-0 flex flex-col items-center justify-center bg-[#231F20]"
+      style="display:none"
+    >
+      <div class="mb-6">
+        <p class="text-pink-blush text-sm font-medium tracking-wider uppercase mb-4 text-center">
+          Loading {productName}...
+        </p>
+        <div class="w-64 h-3 rounded-full bg-charcoal-soft overflow-hidden">
+          <div
+            id="unity-progress-bar-full"
+            class="h-full rounded-full bg-gradient-to-r from-pink-blush to-pink-hot transition-all duration-200"
+            style="width: 0%"
+          ></div>
+        </div>
+      </div>
+      <span class="text-3xl animate-sparkle text-pink-blush">✦</span>
+    </div>
+
+    <!-- Warning/error banner -->
+    <div
+      id="unity-warning"
+      class="absolute top-4 left-1/2 -translate-x-1/2 z-10 rounded-lg px-4 py-2 text-sm shadow-lg max-w-sm text-center bg-white dark:bg-charcoal-mid"
+      style="display:none"
+    ></div>
+
+    <!-- Footer bar -->
+    <div class="flex items-center justify-between mt-2 px-1">
+      <span class="text-xs text-[var(--color-text-muted)] font-medium">{productName}</span>
+      <button
+        id="unity-fullscreen-button"
+        class="text-xs px-4 py-1.5 border border-pink-blush dark:border-charcoal-soft rounded-full hover:bg-pink-hot hover:text-white hover:border-pink-hot transition-colors font-medium text-[var(--color-text-muted)] hover:text-white"
+      >
+        Fullscreen
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const root = document.getElementById('game-player-root')!;
+  const d = root.dataset;
+
+  const canvas       = document.getElementById('unity-canvas') as HTMLCanvasElement;
+  const loadingBar   = document.getElementById('unity-loading-bar')!;
+  const progressFull = document.getElementById('unity-progress-bar-full')!;
+  const fsButton     = document.getElementById('unity-fullscreen-button')!;
+  const warning      = document.getElementById('unity-warning')!;
+  const container    = document.getElementById('unity-container')!;
+
+  function unityShowBanner(msg: string, type: string) {
+    const div = document.createElement('div');
+    div.innerHTML = msg;
+    if (type === 'error') {
+      div.style.cssText = 'background: #fee2e2; color: #991b1b; padding: 8px; border-radius: 4px;';
+    } else if (type === 'warning') {
+      div.style.cssText = 'background: #fef9c3; color: #854d0e; padding: 8px; border-radius: 4px;';
+    }
+    warning.appendChild(div);
+    warning.style.display = 'block';
+
+    if (type !== 'error') {
+      setTimeout(() => {
+        warning.removeChild(div);
+        if (!warning.children.length) warning.style.display = 'none';
+      }, 5000);
+    }
+  }
+
+  // Mobile detection — mirrors the logic from the original index.html
+  if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+    const meta = document.createElement('meta');
+    meta.name = 'viewport';
+    meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+    document.head.appendChild(meta);
+    container.className = 'unity-mobile';
+    canvas.className = 'unity-mobile';
+  } else {
+    canvas.style.width  = `${d.width}px`;
+    canvas.style.height = `${d.height}px`;
+  }
+
+  loadingBar.style.display = 'flex';
+
+  const config = {
+    dataUrl:            d.data!,
+    frameworkUrl:       d.framework!,
+    codeUrl:            d.code!,
+    streamingAssetsUrl: 'StreamingAssets',
+    companyName:        d.company!,
+    productName:        d.product!,
+    productVersion:     d.version!,
+    showBanner:         unityShowBanner,
+  };
+
+  const script = document.createElement('script');
+  script.src = d.loader!;
+  script.onload = () => {
+    (window as any).createUnityInstance(canvas, config, (progress: number) => {
+      progressFull.style.width = `${100 * progress}%`;
+    }).then((instance: any) => {
+      loadingBar.style.display = 'none';
+      fsButton.onclick = () => instance.SetFullscreen(1);
+    }).catch((message: string) => {
+      alert(message);
+    });
+  };
+  document.body.appendChild(script);
+</script>

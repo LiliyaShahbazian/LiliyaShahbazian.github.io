@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GameCard from '../../components/GameCard.astro';
+import { getCollection } from 'astro:content';
+
+const allGames = (await getCollection('games'))
+  .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+---
+<BaseLayout title="Games" description="All Unity WebGL games by Liliya Shahbazian — playable in your browser">
+  <div class="max-w-6xl mx-auto px-4 py-16">
+    <!-- Header -->
+    <div class="mb-12">
+      <h1 class="text-4xl md:text-5xl font-bold mb-3 text-[var(--color-text)]">
+        Games <span class="text-pink-hot">✦</span>
+      </h1>
+      <p class="text-[var(--color-text-muted)] text-lg">
+        {allGames.length} {allGames.length === 1 ? 'game' : 'games'} — all playable right in your browser
+      </p>
+    </div>
+
+    {allGames.length > 0 ? (
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {allGames.map(game => <GameCard game={game} />)}
+      </div>
+    ) : (
+      <div class="text-center py-24">
+        <span class="text-6xl animate-float block mb-4">🎮</span>
+        <p class="text-[var(--color-text-muted)] text-lg">More games coming soon!</p>
+      </div>
+    )}
+  </div>
+</BaseLayout>

@@ -1,0 +1,19 @@
+---
+interface Props {
+  class?: string;
+  delay?: string;
+  size?: 'sm' | 'md' | 'lg';
+}
+
+const { class: className = '', delay = '0s', size = 'md' } = Astro.props;
+const sizeMap = { sm: 'text-lg', md: 'text-2xl', lg: 'text-4xl' };
+---
+<span
+  class:list={[
+    'absolute pointer-events-none select-none animate-sparkle text-pink-blush dark:text-pink-rose',
+    sizeMap[size],
+    className,
+  ]}
+  style={`animation-delay: ${delay}`}
+  aria-hidden="true"
+>✦</span>

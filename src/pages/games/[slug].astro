@@ -1,0 +1,70 @@
+---
+import GameLayout from '../../layouts/GameLayout.astro';
+import GamePlayer from '../../components/GamePlayer.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const games = await getCollection('games');
+  return games.map(game => ({
+    params: { slug: game.slug },
+    props:  { game },
+  }));
+}
+
+interface Props {
+  game: CollectionEntry<'games'>;
+}
+
+const { game } = Astro.props;
+const { Content } = await game.render();
+const { title, description, tags, unity } = game.data;
+---
+<GameLayout {title} {description}>
+  <!-- Game player area -->
+  <div class="bg-[#161622] py-8">
+    <div class="max-w-5xl mx-auto px-4 overflow-x-auto">
+      <GamePlayer
+        loaderUrl={unity.loaderUrl}
+        dataUrl={unity.dataUrl}
+        frameworkUrl={unity.frameworkUrl}
+        codeUrl={unity.codeUrl}
+        productName={unity.productName}
+        width={unity.width}
+        height={unity.height}
+        companyName={unity.companyName}
+        productVersion={unity.productVersion}
+      />
+    </div>
+  </div>
+
+  <!-- Game info -->
+  <div class="max-w-3xl mx-auto px-4 py-12">
+    <!-- Back link -->
+    <a href="/games" class="inline-flex items-center gap-1.5 text-sm text-[var(--color-text-muted)] hover:text-pink-hot transition-colors mb-8 group">
+      <span class="group-hover:-translate-x-0.5 transition-transform">←</span>
+      All Games
+    </a>
+
+    <h1 class="text-4xl font-bold mb-4 text-[var(--color-text)]">{title}</h1>
+
+    <div class="flex flex-wrap gap-2 mb-8">
+      {tags.map(tag => (
+        <span class="text-sm px-3 py-1 rounded-full bg-lavender/15 text-lavender dark:bg-lavender/10 border border-lavender/30 font-medium">
+          {tag}
+        </span>
+      ))}
+    </div>
+
+    <!-- Markdown content from .md file -->
+    <div class="prose prose-lg max-w-none
+                prose-headings:font-bold prose-headings:text-pink-hot
+                prose-p:text-[var(--color-text)] prose-p:leading-relaxed
+                prose-li:text-[var(--color-text)]
+                prose-strong:text-[var(--color-text)]
+                prose-a:text-pink-hot prose-a:no-underline hover:prose-a:underline
+                dark:prose-invert dark:prose-headings:text-pink-hot">
+      <Content />
+    </div>
+  </div>
+</GameLayout>

@@ -1,0 +1,45 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  game: CollectionEntry<'games'>;
+}
+
+const { game } = Astro.props;
+const { title, description, thumbnail, tags } = game.data;
+---
+<a
+  href={`/games/${game.slug}`}
+  class="group block rounded-2xl overflow-hidden border border-pink-blush/40 dark:border-charcoal-soft bg-white dark:bg-charcoal-mid hover:border-pink-hot dark:hover:border-pink-hot hover:shadow-xl hover:shadow-pink-hot/10 transition-all duration-300 hover:-translate-y-1"
+>
+  <!-- Thumbnail -->
+  <div class="aspect-video bg-gradient-to-br from-pink-blush/30 to-lavender/30 dark:from-charcoal-soft dark:to-charcoal-mid overflow-hidden relative">
+    <img
+      src={thumbnail}
+      alt={`${title} screenshot`}
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      onerror="this.style.display='none'"
+    />
+    <!-- Fallback overlay shown when no thumbnail -->
+    <div class="absolute inset-0 flex items-center justify-center opacity-40 group-hover:opacity-60 transition-opacity">
+      <span class="text-6xl">🎮</span>
+    </div>
+  </div>
+
+  <!-- Info -->
+  <div class="p-5">
+    <h3 class="font-bold text-lg mb-2 text-[var(--color-text)] group-hover:text-pink-hot transition-colors">
+      {title}
+    </h3>
+    <p class="text-sm text-[var(--color-text-muted)] line-clamp-2 mb-4 leading-relaxed">
+      {description}
+    </p>
+    <div class="flex flex-wrap gap-2">
+      {tags.map(tag => (
+        <span class="text-xs px-3 py-1 rounded-full bg-lavender/15 text-lavender dark:bg-lavender/10 border border-lavender/30 font-medium">
+          {tag}
+        </span>
+      ))}
+    </div>
+  </div>
+</a>
