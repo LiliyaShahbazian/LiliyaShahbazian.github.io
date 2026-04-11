@@ -7,10 +7,10 @@ featured: false
 publishDate: 2024-01-02
 
 unity:
-  loaderUrl: "/games/galaxy-strike/Build/GalaxyStrike.loader.js"
-  dataUrl: "/games/galaxy-strike/Build/GalaxyStrike.data.unityweb"
-  frameworkUrl: "/games/galaxy-strike/Build/GalaxyStrike.framework.js.unityweb"
-  codeUrl: "/games/galaxy-strike/Build/GalaxyStrike.wasm.unityweb"
+  loaderUrl: "/games/galaxy-strike/Build/GalaxyStrikeFixed.loader.js"
+  dataUrl: "/games/galaxy-strike/Build/GalaxyStrikeFixed.data"
+  frameworkUrl: "/games/galaxy-strike/Build/GalaxyStrikeFixed.framework.js"
+  codeUrl: "/games/galaxy-strike/Build/GalaxyStrikeFixed.wasm"
   width: 960
   height: 600
   productName: "Galaxy Strike"
