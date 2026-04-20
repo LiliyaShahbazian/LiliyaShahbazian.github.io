@@ -1,5 +1,6 @@
+---
 title: "Royal Run"
-description: "A runner game built with Unity."
+description: "Sprint, dodge, and dash your way through royal obstacles in this fast-paced endless runner."
 thumbnail: "/games/royal-run/thumbnail.png"
 tags: ["Runner", "Unity", "Arcade"]
 featured: true
@@ -17,4 +18,4 @@ unity:
   companyName: "DefaultCompany"
 ---
 
-Royal Run is a fast-paced runner game built with Unity.
+Royal Run is an endless runner where every second counts. Sprint through an unforgiving gauntlet of obstacles, dodge traps, and push your reflexes to the limit. How far can you go before the course beats you?
