@@ -18,10 +18,11 @@ const { title, description, thumbnail, tags } = game.data;
       src={thumbnail}
       alt={`${title} screenshot`}
       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-      onerror="this.style.display='none'"
+      onload="this.nextElementSibling.style.opacity='0'"
+      onerror="this.style.display='none'; this.nextElementSibling.style.opacity='1'"
     />
     <!-- Fallback overlay shown when no thumbnail -->
-    <div class="absolute inset-0 flex items-center justify-center opacity-40 group-hover:opacity-60 transition-opacity">
+    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-0 transition-opacity">
       <span class="text-6xl">🎮</span>
     </div>
   </div>
